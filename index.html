@@ -1,710 +1,797 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10102b">
   <title>Fridge Macros</title>
-  <meta name="description" content="Fridge Macros — simple, reliable game macros and automation tools." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="icon" type="image/jpeg" href="./Fmmainlogo.jpg">
+
   <style>
     :root {
-      --bg: #07090f;
-      --bg-soft: #0c1018;
-      --card: #111725;
-      --card-hover: #151d2e;
-      --border: #222c40;
-      --text: #e8edf7;
-      --muted: #97a3b8;
-      --accent: #38bdf8;
-      --accent-2: #818cf8;
-      --green: #34d399;
-      --radius: 18px;
+      --background: #090b1c;
+      --panel: rgba(20, 24, 57, .78);
+      --text: #f3f3ff;
+      --muted: #acafd0;
+      --purple: #b66cff;
+      --pink: #e879f9;
+      --blue: #449dff;
+      --border: rgba(164, 150, 255, .19);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; }
 
     html {
       scroll-behavior: smooth;
+      scroll-padding-top: 105px;
     }
 
     body {
-      background:
-        radial-gradient(1000px 500px at 80% -10%, rgba(56, 189, 248, .13), transparent 60%),
-        radial-gradient(800px 500px at 10% 0%, rgba(129, 140, 248, .12), transparent 55%),
-        var(--bg);
-      color: var(--text);
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      line-height: 1.6;
+      margin: 0;
       min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text);
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      line-height: 1.6;
+      background:
+        radial-gradient(ellipse at 8% 0%, #67268755, transparent 45%),
+        radial-gradient(ellipse at 95% 25%, #1455aa44, transparent 50%),
+        var(--background);
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    a, button, summary { -webkit-tap-highlight-color: transparent; }
+
+    :focus-visible {
+      outline: 2px solid #e7baff;
+      outline-offset: 5px;
     }
 
     .container {
-      width: min(1150px, calc(100% - 40px));
-      margin: 0 auto;
+      width: min(1120px, calc(100% - 36px));
+      margin-inline: auto;
     }
+
+    /* Background layers never intercept clicks. */
+    .ambient,
+    .pattern,
+    #effects {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .ambient {
+      z-index: -1;
+      background: radial-gradient(
+        440px circle at var(--mx, 50%) var(--my, 20%),
+        rgba(148, 83, 255, .17),
+        transparent 75%
+      );
+    }
+
+    .pattern {
+      z-index: -1;
+      opacity: .18;
+      background-image:
+        linear-gradient(60deg, #8075ff17 25%, transparent 25%),
+        linear-gradient(-60deg, #638aff17 25%, transparent 25%),
+        linear-gradient(60deg, transparent 75%, #8075ff17 75%),
+        linear-gradient(-60deg, transparent 75%, #638aff17 75%);
+      background-size: 130px 225px;
+    }
+
+    #effects { z-index: 100; overflow: hidden; }
 
     header {
       position: sticky;
       top: 0;
-      z-index: 50;
-      backdrop-filter: blur(14px);
-      background: rgba(7, 9, 15, .78);
-      border-bottom: 1px solid rgba(34, 44, 64, .8);
+      z-index: 20;
+      background: rgba(9, 11, 28, .83);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
     }
 
     .nav {
+      min-height: 84px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 0;
       gap: 20px;
     }
 
-    .logo {
-      display: flex;
+    .brand {
+      display: inline-flex;
       align-items: center;
       gap: 12px;
-      font-weight: 800;
       font-size: 20px;
-      letter-spacing: -.02em;
+      font-weight: 800;
+      letter-spacing: -.6px;
+      white-space: nowrap;
     }
 
-    .logo-mark {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      font-size: 19px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 8px 24px rgba(56, 189, 248, .25);
+    .brand img {
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 14px;
+      box-shadow: 0 0 24px #a45aff40;
     }
 
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 24px;
+    .nav-links { display: flex; gap: 26px; }
+
+    .nav-links a {
       color: var(--muted);
-      font-size: 15px;
-      font-weight: 500;
+      font-size: 14px;
+      transition: color .2s;
     }
 
-    .nav-links a:hover {
-      color: var(--text);
-    }
+    .nav-links a:hover { color: #eab8ff; }
 
-    .btn {
+    .button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 11px 20px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: #121a29;
+      padding: 12px 22px;
+      border: 1px solid #bda0ff35;
+      border-radius: 13px;
+      background: #ffffff06;
       color: var(--text);
-      font-weight: 600;
-      font-size: 15px;
+      font-weight: 700;
+      font-size: 14px;
       cursor: pointer;
-      transition: .18s ease;
+      transition: transform .2s, box-shadow .2s, background .2s;
     }
 
-    .btn:hover {
-      transform: translateY(-1px);
-      border-color: #33415a;
-      background: #172234;
+    .button:hover {
+      transform: translateY(-3px);
+      background: #b185ff18;
+      box-shadow: 0 8px 28px #9162ff28;
     }
 
-    .btn-primary {
-      border: 0;
-      color: #04121c;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 10px 30px rgba(56, 189, 248, .22);
+    .button:active { transform: scale(.97); }
+
+    .primary {
+      border-color: #ddbbff55;
+      background: linear-gradient(115deg, #ac51e4, #6461ed, #298de9);
+      box-shadow: 0 6px 24px #7658ff30;
     }
 
-    .btn-primary:hover {
-      filter: brightness(1.08);
+    .primary:hover {
+      background: linear-gradient(115deg, #bf68f0, #7975ff, #42a1fa);
+    }
+
+    /* Shared cursor-reactive surfaces. */
+    .reactive {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      transition: border-color .25s, box-shadow .25s, transform .25s;
+    }
+
+    .reactive::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0;
+      background: radial-gradient(
+        320px circle at var(--x, 50%) var(--y, 50%),
+        #b66cff32,
+        transparent 75%
+      );
+      transition: opacity .25s;
+    }
+
+    .reactive:hover::before,
+    .reactive:focus-within::before { opacity: 1; }
+
+    .reactive:hover {
+      border-color: #b281ff77;
+      box-shadow: 0 15px 45px #05061155, 0 0 22px #9b67ff12;
     }
 
     .hero {
-      padding: 95px 0 75px;
+      padding: 58px 0 42px;
       text-align: center;
     }
 
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(56, 189, 248, .28);
-      background: rgba(56, 189, 248, .08);
-      color: #7dd3fc;
-      font-size: 13px;
-      font-weight: 600;
+    .logo-stage {
+      width: min(360px, 80vw);
+      aspect-ratio: 1;
+      margin: 0 auto 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: radial-gradient(circle, #9857ef25, transparent 70%);
     }
 
-    .hero h1 {
-      margin: 22px auto 18px;
-      max-width: 850px;
-      font-size: clamp(38px, 7vw, 72px);
-      line-height: 1.05;
-      letter-spacing: -.045em;
-      font-weight: 800;
+    .logo-button {
+      display: block;
+      width: 74%;
+      padding: 0;
+      border: 1px solid #dcaaff55;
+      border-radius: 27%;
+      background: transparent;
+      cursor: pointer;
+      box-shadow:
+        -20px -12px 70px #bd4dff26,
+        20px 20px 70px #288aff30;
+      transition: transform .25s, box-shadow .25s;
     }
 
-    .gradient {
-      background: linear-gradient(100deg, #7dd3fc, #a5b4fc 55%, #f0abfc);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+    .logo-button:hover {
+      transform: translateY(-7px) rotate(-3deg) scale(1.035);
+      box-shadow:
+        -20px -12px 85px #bd4dff50,
+        20px 20px 85px #288aff50;
     }
 
-    .hero p {
-      max-width: 680px;
-      margin: 0 auto 32px;
-      color: var(--muted);
-      font-size: 18px;
+    .logo-button:active { transform: scale(.94); }
+
+    .logo-button img {
+      width: 100%;
+      display: block;
+      border-radius: inherit;
     }
 
     .hero-actions {
       display: flex;
-      justify-content: center;
-      gap: 14px;
       flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
     }
 
-    .stats {
+    section { padding: 38px 0; }
+
+    .products {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      max-width: 760px;
-      margin: 55px auto 0;
-    }
-
-    .stat {
-      padding: 20px;
-      border-radius: var(--radius);
-      background: rgba(17, 23, 37, .68);
-      border: 1px solid var(--border);
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 24px;
-    }
-
-    .stat span {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    section {
-      padding: 75px 0;
-    }
-
-    .section-head {
-      max-width: 700px;
-      margin-bottom: 38px;
-    }
-
-    .section-head h2 {
-      font-size: clamp(28px, 4vw, 42px);
-      letter-spacing: -.03em;
-      margin-bottom: 12px;
-    }
-
-    .section-head p {
-      color: var(--muted);
-      font-size: 17px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 22px;
     }
 
     .product {
-      position: relative;
+      padding: 28px;
+      border-radius: 22px;
       display: flex;
       flex-direction: column;
-      padding: 26px;
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(17, 23, 37, .95), rgba(12, 16, 24, .95));
-      border: 1px solid var(--border);
-      transition: .2s ease;
     }
 
-    .product:hover {
-      transform: translateY(-4px);
-      border-color: #33415a;
-      background: linear-gradient(180deg, rgba(21, 29, 46, .95), rgba(12, 16, 24, .95));
+    .product:hover { transform: translateY(-5px); }
+
+    .product-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .product h2 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 1.35;
+      letter-spacing: -.5px;
     }
 
     .badge {
-      position: absolute;
-      top: 18px;
-      right: 18px;
-      padding: 5px 11px;
-      border-radius: 999px;
-      font-size: 12px;
+      flex-shrink: 0;
+      border: 1px solid #cc9bff40;
+      background: #bb75ff15;
+      padding: 4px 10px;
+      color: #d9b6ff;
+      font-size: 11px;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .04em;
+      border-radius: 8px;
     }
 
-    .badge.premium {
-      color: #fbbf24;
-      background: rgba(251, 191, 36, .1);
-      border: 1px solid rgba(251, 191, 36, .25);
-    }
-
-    .badge.standard {
-      color: #7dd3fc;
-      background: rgba(56, 189, 248, .1);
-      border: 1px solid rgba(56, 189, 248, .25);
-    }
-
-    .badge.robux {
-      color: #34d399;
-      background: rgba(52, 211, 153, .1);
-      border: 1px solid rgba(52, 211, 153, .25);
-    }
-
-    .product h3 {
-      font-size: 23px;
-      margin: 8px 0 8px;
-      letter-spacing: -.02em;
-    }
-
-    .product > p {
-      color: var(--muted);
-      margin-bottom: 18px;
+    .badge.blue {
+      color: #9ed5ff;
+      border-color: #6fbaff40;
+      background: #439bff15;
     }
 
     .features {
       list-style: none;
-      margin-bottom: 24px;
+      padding: 0;
+      margin: 0 0 25px;
       display: grid;
-      gap: 10px;
+      gap: 11px;
+      color: var(--muted);
+      font-size: 14px;
     }
 
     .features li {
       display: flex;
       gap: 10px;
-      color: #c8d2e2;
-      font-size: 15px;
     }
 
     .features li::before {
       content: "✓";
-      color: var(--green);
+      color: #bb91ff;
       font-weight: 800;
     }
 
-    .price-row {
+    .product-bottom {
       margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      border-top: 1px solid var(--border);
-      padding-top: 20px;
+      gap: 15px;
     }
 
-    .price {
-      font-size: 22px;
-      font-weight: 800;
-    }
+    .price { font-size: 25px; font-weight: 800; }
 
     .price small {
       display: block;
+      font-size: 11px;
       color: var(--muted);
-      font-size: 13px;
-      font-weight: 500;
+      font-weight: 400;
+    }
+
+    .section-title {
+      margin: 0 0 24px;
+      font-size: 27px;
+      letter-spacing: -.8px;
     }
 
     .steps {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 18px;
-    }
-
-    .step {
-      padding: 24px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: var(--card);
-    }
-
-    .step-num {
-      width: 36px;
-      height: 36px;
-      display: grid;
-      place-items: center;
-      border-radius: 10px;
-      margin-bottom: 14px;
-      font-weight: 800;
-      color: #04121c;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    }
-
-    .step h3 {
-      font-size: 18px;
-      margin-bottom: 7px;
-    }
-
-    .step p {
-      color: var(--muted);
-      font-size: 15px;
-    }
-
-    .faq {
-      max-width: 820px;
-      margin: 0 auto;
-      display: grid;
-      gap: 12px;
-    }
-
-    details {
-      padding: 18px 22px;
-      border-radius: 14px;
-      background: var(--card);
-      border: 1px solid var(--border);
-    }
-
-    summary {
-      cursor: pointer;
-      font-weight: 600;
-      list-style: none;
-      display: flex;
-      justify-content: space-between;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 16px;
     }
 
-    summary::-webkit-details-marker {
-      display: none;
-    }
+    .step { padding: 23px; border-radius: 18px; }
 
-    summary::after {
-      content: "+";
-      color: var(--accent);
+    .number {
+      display: grid;
+      place-items: center;
+      width: 35px;
+      height: 35px;
+      margin-bottom: 17px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #b458e4, #398be9);
       font-weight: 800;
     }
 
-    details[open] summary::after {
-      content: "−";
-    }
+    .step h3 { margin: 0 0 8px; font-size: 16px; }
 
+    .step p,
     details p {
-      margin-top: 12px;
-      color: var(--muted);
-    }
-
-    .cta {
-      text-align: center;
-      padding: 70px 30px;
-      border-radius: 26px;
-      border: 1px solid rgba(56, 189, 248, .25);
-      background:
-        radial-gradient(600px 250px at 50% 0%, rgba(56, 189, 248, .16), transparent),
-        var(--card);
-    }
-
-    .cta h2 {
-      font-size: clamp(30px, 5vw, 48px);
-      letter-spacing: -.035em;
-      margin-bottom: 14px;
-    }
-
-    .cta p {
-      color: var(--muted);
-      max-width: 580px;
-      margin: 0 auto 28px;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 35px 0;
+      margin: 0;
       color: var(--muted);
       font-size: 14px;
     }
 
-    .footer-row {
+    .faq { display: grid; gap: 12px; }
+
+    details { padding: 20px 23px; border-radius: 16px; }
+
+    summary {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      gap: 18px;
-      flex-wrap: wrap;
+      gap: 16px;
+      cursor: pointer;
+      list-style: none;
+      font-weight: 600;
     }
 
-    @media (max-width: 720px) {
-      .nav-links {
-        display: none;
-      }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; color: #ce9bff; font-size: 22px; }
+    details[open] summary::after { content: "−"; }
+    details p { margin-top: 13px; }
 
-      .hero {
-        padding: 70px 0 55px;
-      }
+    footer {
+      margin-top: 38px;
+      padding: 28px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
 
-      .stats {
-        grid-template-columns: 1fr;
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .footer-brand { display: flex; align-items: center; gap: 10px; }
+    .footer-brand img { width: 30px; height: 30px; border-radius: 9px; }
+
+    .click-ring {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #dbadff;
+      border-radius: 50%;
+      box-shadow: 0 0 15px #aa6aff99;
+      animation: ring .7s ease-out forwards;
+    }
+
+    .particle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--color);
+      box-shadow: 0 0 10px var(--color);
+      animation: burst .65s ease-out forwards;
+    }
+
+    @keyframes ring {
+      from { transform: translate(-50%, -50%) scale(.2); opacity: 1; }
+      to { transform: translate(-50%, -50%) scale(8); opacity: 0; }
+    }
+
+    @keyframes burst {
+      from { transform: translate(-50%, -50%); opacity: 1; }
+      to {
+        transform: translate(
+          calc(-50% + var(--dx)),
+          calc(-50% + var(--dy))
+        );
+        opacity: 0;
       }
+    }
+
+    @media (max-width: 850px) {
+      .nav-links { gap: 16px; }
+      .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 600px) {
+      .container { width: calc(100% - 28px); }
+      .nav { min-height: 75px; gap: 10px; }
+      .brand { font-size: 16px; gap: 8px; }
+      .brand img { width: 39px; height: 39px; }
+      .nav-links { display: none; }
+      .nav > .button { padding: 10px 12px; font-size: 12px; }
+      .hero { padding-top: 30px; }
+      .logo-stage { width: 260px; }
+      .products { grid-template-columns: 1fr; }
+      .product { padding: 23px; }
+      .product h2 { font-size: 19px; }
+      .steps { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      .product:hover,
+      .button:hover,
+      .logo-button:hover { transform: none; }
+      #effects, .ambient { display: none; }
     }
   </style>
 </head>
-<body>
 
-<header>
-  <div class="container nav">
-    <a href="#" class="logo">
-      <div class="logo-mark">🧊</div>
-      Fridge Macros
-    </a>
+<body id="top">
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="pattern" aria-hidden="true"></div>
+  <div id="effects" aria-hidden="true"></div>
 
-    <nav class="nav-links">
-      <a href="#store">Store</a>
-      <a href="#how-to-buy">How to Buy</a>
-      <a href="#faq">FAQ</a>
-    </nav>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="Fridge Macros home">
+        <img src="./Fmmainlogo.jpg" alt="" width="48" height="48">
+        <span>Fridge Macros</span>
+      </a>
 
-    <a class="btn btn-primary" href="https://discord.gg/YOUR_INVITE" target="_blank" rel="noopener">
-      Join Discord
-    </a>
-  </div>
-</header>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#store">Store</a>
+        <a href="#how-to-buy">How to Buy</a>
+        <a href="#faq">FAQ</a>
+      </nav>
 
-<main>
-  <section class="hero">
-    <div class="container">
-      <div class="pill">⚡ Simple macros. Smooth gameplay.</div>
-
-      <h1>
-        Tools that make your <span class="gradient">grinding easier.</span>
-      </h1>
-
-      <p>
-        Fridge Macros builds easy-to-use automation tools for Roblox games.
-        Browse the store, get your license, and start farming smarter.
-      </p>
-
-      <div class="hero-actions">
-        <a href="#store" class="btn btn-primary">Browse Macros</a>
-        <a href="https://discord.gg/YOUR_INVITE" target="_blank" rel="noopener" class="btn">Get Support</a>
-      </div>
-
-      <div class="stats">
-        <div class="stat">
-          <strong>100%</strong>
-          <span>Beginner friendly</span>
-        </div>
-        <div class="stat">
-          <strong>Windows</strong>
-          <span>Standalone apps</span>
-        </div>
-        <div class="stat">
-          <strong>24/7</strong>
-          <span>Discord support</span>
-        </div>
-      </div>
+      <a class="button primary discord-link"
+         href="https://discord.gg/YOUR_INVITE"
+         target="_blank" rel="noopener noreferrer">
+        Join Discord ↗
+      </a>
     </div>
-  </section>
+  </header>
 
-  <section id="store">
-    <div class="container">
-      <div class="section-head">
-        <h2>Macro Store</h2>
-        <p>Pick a macro below. New macros will be added as they release.</p>
+  <main>
+    <!-- No home headline or description. -->
+    <section class="hero" aria-label="Fridge Macros">
+      <div class="container">
+        <div class="logo-stage">
+          <button class="logo-button" type="button"
+                  aria-label="Animate the Fridge Macros logo">
+            <img src="./Fmmainlogo.jpg"
+                 alt="Fridge Macros"
+                 width="1024" height="1024"
+                 fetchpriority="high">
+          </button>
+        </div>
+
+        <div class="hero-actions">
+          <a class="button primary" href="#store">Browse Macros ↓</a>
+          <a class="button discord-link"
+             href="https://discord.gg/YOUR_INVITE"
+             target="_blank" rel="noopener noreferrer">
+            Get Support ↗
+          </a>
+        </div>
       </div>
+    </section>
 
-      <div class="grid">
-        <article class="product">
-          <span class="badge premium">Premium</span>
-          <h3>Fishing Master</h3>
-          <p>Simple and reliable macro for Fishing Master.</p>
+    <!-- No store heading or description. -->
+    <!-- Product details below are sample content: edit before publishing. -->
+    <section id="store" aria-label="Macro store">
+      <div class="container products">
+
+        <article class="product reactive">
+          <div class="product-top">
+            <h2>Fishing Master</h2>
+            <span class="badge">Premium</span>
+          </div>
 
           <ul class="features">
             <li>Start and stop with one key</li>
             <li>Automatic skills and adjustable clicks</li>
             <li>Satchel checks and live catch stats</li>
-            <li>Standalone .exe, no extra setup</li>
+            <li>Standalone Windows application</li>
           </ul>
 
-          <div class="price-row">
-            <div class="price">$5 <small>one-time</small></div>
-            <a class="btn btn-primary" href="https://discord.gg/YOUR_INVITE" target="_blank" rel="noopener">Buy</a>
+          <div class="product-bottom">
+            <div class="price">$5 <small>one-time payment</small></div>
+            <a class="button primary discord-link"
+               href="https://discord.gg/YOUR_INVITE"
+               target="_blank" rel="noopener noreferrer"
+               aria-label="Buy Fishing Master through Discord">
+              Buy Now ↗
+            </a>
           </div>
         </article>
 
-        <article class="product">
-          <span class="badge standard">Standard</span>
-          <h3>Project Slayers Standard</h3>
-          <p>Boss farming macro for Project Slayers.</p>
+        <article class="product reactive">
+          <div class="product-top">
+            <h2>Project Slayers Standard</h2>
+            <span class="badge blue">Standard</span>
+          </div>
 
           <ul class="features">
             <li>Finds and tracks bosses</li>
-            <li>Walks to bosses using saved paths</li>
-            <li>Auto combat with custom combo keys</li>
-            <li>Server hops when no boss spawns</li>
+            <li>Saved farming paths</li>
+            <li>Custom combat combo keys</li>
+            <li>Server hopping features</li>
           </ul>
 
-          <div class="price-row">
-            <div class="price">$5 <small>one-time</small></div>
-            <a class="btn btn-primary" href="https://discord.gg/YOUR_INVITE" target="_blank" rel="noopener">Buy</a>
+          <div class="product-bottom">
+            <div class="price">$5 <small>one-time payment</small></div>
+            <a class="button primary discord-link"
+               href="https://discord.gg/YOUR_INVITE"
+               target="_blank" rel="noopener noreferrer"
+               aria-label="Buy Project Slayers Standard through Discord">
+              Buy Now ↗
+            </a>
           </div>
         </article>
 
-        <article class="product">
-          <span class="badge premium">Premium</span>
-          <h3>Project Slayers Premium</h3>
-          <p>Everything in Standard, plus extra farming features.</p>
+        <article class="product reactive">
+          <div class="product-top">
+            <h2>Project Slayers Premium</h2>
+            <span class="badge">Premium</span>
+          </div>
 
           <ul class="features">
             <li>Everything in Standard</li>
-            <li>Auto fishing</li>
+            <li>Automatic fishing</li>
             <li>Boss queue farming</li>
-            <li>Live stats and app themes</li>
+            <li>Live stats and application themes</li>
           </ul>
 
-          <div class="price-row">
-            <div class="price">$8 <small>one-time</small></div>
-            <a class="btn btn-primary" href="https://discord.gg/YOUR_INVITE" target="_blank" rel="noopener">Buy</a>
+          <div class="product-bottom">
+            <div class="price">$8 <small>one-time payment</small></div>
+            <a class="button primary discord-link"
+               href="https://discord.gg/YOUR_INVITE"
+               target="_blank" rel="noopener noreferrer"
+               aria-label="Buy Project Slayers Premium through Discord">
+              Buy Now ↗
+            </a>
           </div>
         </article>
 
-        <article class="product">
-          <span class="badge robux">Robux</span>
-          <h3>Anime Mysterious</h3>
-          <p>Full auto farm for Anime Mysterious, paid with Robux.</p>
+        <article class="product reactive">
+          <div class="product-top">
+            <h2>Anime Mysterious</h2>
+            <span class="badge blue">Robux</span>
+          </div>
 
           <ul class="features">
-            <li>Farms stages, raids and boss events</li>
-            <li>Buys from the hourly shop</li>
-            <li>Runs challenges after reset</li>
-            <li>Rejoins private server after kicks</li>
+            <li>Stage and raid farming</li>
+            <li>Hourly shop automation</li>
+            <li>Challenge farming</li>
+            <li>Private server reconnecting</li>
           </ul>
 
-          <div class="price-row">
-            <div class="price">150 R$ <small>one-time</small></div>
-            <a class="btn btn-primary" href="https://discord.gg/YOUR_INVITE" target="_blank" rel="noopener">Buy</a>
+          <div class="product-bottom">
+            <div class="price">150 R$ <small>one-time payment</small></div>
+            <a class="button primary discord-link"
+               href="https://discord.gg/YOUR_INVITE"
+               target="_blank" rel="noopener noreferrer"
+               aria-label="Buy Anime Mysterious through Discord">
+              Buy Now ↗
+            </a>
           </div>
         </article>
+
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="how-to-buy">
-    <div class="container">
-      <div class="section-head">
-        <h2>How to Buy</h2>
-        <p>Purchases are handled through Discord tickets for now.</p>
-      </div>
+    <section id="how-to-buy">
+      <div class="container">
+        <h2 class="section-title">How to Buy</h2>
 
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <h3>Join Discord</h3>
-          <p>Join the Fridge Macros Discord server and read the rules.</p>
-        </div>
+        <div class="steps">
+          <article class="step reactive">
+            <div class="number">1</div>
+            <h3>Join Discord</h3>
+            <p>Visit the Fridge Macros community.</p>
+          </article>
 
-        <div class="step">
-          <div class="step-num">2</div>
-          <h3>Open a Ticket</h3>
-          <p>Open a ticket and tell us which macro you want to buy.</p>
-        </div>
+          <article class="step reactive">
+            <div class="number">2</div>
+            <h3>Open a Ticket</h3>
+            <p>Tell us which macro you want.</p>
+          </article>
 
-        <div class="step">
-          <div class="step-num">3</div>
-          <h3>Complete Payment</h3>
-          <p>Pay using the secure payment link provided in your ticket.</p>
-        </div>
+          <article class="step reactive">
+            <div class="number">3</div>
+            <h3>Confirm Details</h3>
+            <p>Check compatibility, pricing, and purchase terms.</p>
+          </article>
 
-        <div class="step">
-          <div class="step-num">4</div>
-          <h3>Get Access</h3>
-          <p>Receive your download access and personal license key.</p>
+          <article class="step reactive">
+            <div class="number">4</div>
+            <h3>Get Access</h3>
+            <p>Follow the delivery and setup instructions in your ticket.</p>
+          </article>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="faq">
-    <div class="container">
-      <div class="section-head" style="text-align:center; margin-inline:auto;">
-        <h2>Frequently Asked Questions</h2>
-        <p>Quick answers before you buy.</p>
+    <section id="faq">
+      <div class="container">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+
+        <div class="faq">
+          <details class="reactive">
+            <summary>How do I contact support?</summary>
+            <p>Use the Get Support button to visit our Discord server.</p>
+          </details>
+
+          <details class="reactive">
+            <summary>What should I check before buying?</summary>
+            <p>Confirm the supported game, operating system, available features,
+              and current price in your ticket before paying.</p>
+          </details>
+
+          <details class="reactive">
+            <summary>Where do I find setup instructions?</summary>
+            <p>Request the product’s setup guide in your Discord ticket.</p>
+          </details>
+        </div>
       </div>
+    </section>
+  </main>
 
-      <div class="faq">
-        <details open>
-          <summary>How do I get support?</summary>
-          <p>Open a ticket in the Discord server. Support, license keys and bug reports are handled there.</p>
-        </details>
-
-        <details>
-          <summary>How do I receive my product?</summary>
-          <p>After payment is confirmed, you receive download access and a unique license key inside your ticket.</p>
-        </details>
-
-        <details>
-          <summary>What payment methods are accepted?</summary>
-          <p>Payments are made through a secure payment link provided inside your Discord ticket.</p>
-        </details>
-
-        <details>
-          <summary>Are the macros safe to use?</summary>
-          <p>Automation may not be allowed in every game. Always check the game’s rules before using any macro, and use tools at your own risk.</p>
-        </details>
-
-        <details>
-          <summary>Can I share my license key?</summary>
-          <p>No. License keys are personal. Shared or resold keys may be revoked without a refund.</p>
-        </details>
-
-        <details>
-          <summary>What do I need to run the macros?</summary>
-          <p>A Windows PC. Standalone .exe versions do not require extra software.</p>
-        </details>
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="./Fmmainlogo.jpg" alt="" width="30" height="30">
+        <span>© <span id="year">2026</span> Fridge Macros</span>
       </div>
+      <span>Independent project. Not affiliated with Roblox Corporation.</span>
     </div>
-  </section>
+  </footer>
 
-  <section>
-    <div class="container">
-      <div class="cta">
-        <h2>Ready to grind smarter?</h2>
-        <p>Pick a macro, join the Discord, and get started in minutes.</p>
-        <a class="btn btn-primary" href="https://discord.gg/YOUR_INVITE" target="_blank" rel="noopener">
-          Join Fridge Macros Discord
-        </a>
-      </div>
-    </div>
-  </section>
-</main>
+  <script>
+    // Change your invite once here to update every Discord button.
+    const DISCORD_URL = "https://discord.gg/YOUR_INVITE";
 
-<footer>
-  <div class="container footer-row">
-    <div>
-      <strong>Fridge Macros</strong><br />
-      © 2026 Fridge Macros. All rights reserved.
-    </div>
+    document.querySelectorAll(".discord-link").forEach(link => {
+      link.href = DISCORD_URL;
+    });
 
-    <div>
-      Fridge Macros is an independent project and is not affiliated with, endorsed by, or sponsored by Roblox Corporation.
-    </div>
-  </div>
-</footer>
+    document.getElementById("year").textContent = new Date().getFullYear();
 
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    );
+
+    const ambient = document.querySelector(".ambient");
+    const effects = document.getElementById("effects");
+    const surfaces = document.querySelectorAll(".reactive");
+
+    let pointerX = window.innerWidth / 2;
+    let pointerY = window.innerHeight / 4;
+    let framePending = false;
+
+    document.addEventListener("pointermove", event => {
+      if (reducedMotion.matches || event.pointerType === "touch") return;
+
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+
+      if (framePending) return;
+      framePending = true;
+
+      requestAnimationFrame(() => {
+        ambient.style.setProperty("--mx", pointerX + "px");
+        ambient.style.setProperty("--my", pointerY + "px");
+        framePending = false;
+      });
+    }, { passive: true });
+
+    surfaces.forEach(surface => {
+      surface.addEventListener("pointermove", event => {
+        if (reducedMotion.matches || event.pointerType === "touch") return;
+
+        const rect = surface.getBoundingClientRect();
+        surface.style.setProperty("--x", event.clientX - rect.left + "px");
+        surface.style.setProperty("--y", event.clientY - rect.top + "px");
+      }, { passive: true });
+    });
+
+    function burst(x, y, large = false) {
+      if (reducedMotion.matches || effects.childElementCount > 140) return;
+
+      const ring = document.createElement("span");
+      ring.className = "click-ring";
+      ring.style.left = x + "px";
+      ring.style.top = y + "px";
+      effects.appendChild(ring);
+      ring.addEventListener("animationend", () => ring.remove(), { once: true });
+
+      const colors = ["#e879f9", "#b66cff", "#449dff", "#c8b6ff"];
+      const count = large ? 22 : 9;
+
+      for (let i = 0; i < count; i++) {
+        const particle = document.createElement("span");
+        const angle = Math.PI * 2 * i / count;
+        const distance = (large ? 95 : 40) + Math.random() * 45;
+
+        particle.className = "particle";
+        particle.style.left = x + "px";
+        particle.style.top = y + "px";
+        particle.style.setProperty("--color", colors[i % colors.length]);
+        particle.style.setProperty("--dx", Math.cos(angle) * distance + "px");
+        particle.style.setProperty("--dy", Math.sin(angle) * distance + "px");
+
+        effects.appendChild(particle);
+        particle.addEventListener(
+          "animationend", () => particle.remove(), { once: true }
+        );
+      }
+    }
+
+    document.addEventListener("click", event => {
+      const logo = event.target.closest(".logo-button");
+
+      // Keyboard-triggered clicks have no useful pointer coordinates.
+      if (event.detail === 0) {
+        const rect = event.target.getBoundingClientRect();
+        burst(rect.left + rect.width / 2, rect.top + rect.height / 2, !!logo);
+      } else {
+        burst(event.clientX, event.clientY, !!logo);
+      }
+    });
+  </script>
 </body>
 </html>
